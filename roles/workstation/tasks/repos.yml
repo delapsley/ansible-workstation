@@ -1,0 +1,38 @@
+---
+# set up yum repos
+- name: check for RPMFusion free
+  shell: rpm -q rpmfusion-free-release
+  register: rpmfusion_free_check
+  ignore_errors: true
+  changed_when: "rpmfusion_free_check.rc != 0"
+- name: check for RPMFusion nonfree
+  shell: rpm -q rpmfusion-nonfree-release
+  register: rpmfusion_nonfree_check
+  ignore_errors: true
+  changed_when: "rpmfusion_nonfree_check.rc != 0"
+- name: check for Adobe Flash repo
+  shell: rpm -q adobe-release-x86_64
+  register: adobe_release_check
+  ignore_errors: true
+  changed_when: "adobe_release_check.rc != 0"
+
+- name: install RPMFusion free release RPM
+  shell: yum localinstall --nogpgcheck http://download1.rpmfusion.org/free/fedora/rpmfusion-free-release-$(rpm -E %fedora).noarch.rpm
+  when: rpmfusion_free_check.rc != 0
+  notify:
+    - yum clean all
+- name: install RPMFusion nonfree release RPM
+  shell: yum localinstall --nogpgcheck http://download1.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-$(rpm -E %fedora).noarch.rpm
+  when: rpmfusion_nonfree_check.rc != 0
+  notify:
+    - yum clean all
+- name: install Adobe release RPM
+  command: yum localinstall --nogpgcheck http://linuxdownload.adobe.com/adobe-release/adobe-release-x86_64-1.0-1.noarch.rpm
+  when: adobe_release_check.rc != 0
+  notify:
+    - yum clean all
+- name: install VirtualBox yum repo
+  get_url: url="http://download.virtualbox.org/virtualbox/rpm/fedora/virtualbox.repo"
+       dest="/etc/yum.repos.d"
+  notify:
+    - yum clean all
