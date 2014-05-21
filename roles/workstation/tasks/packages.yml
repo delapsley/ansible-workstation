@@ -3,6 +3,7 @@
 - name: install packages
   yum: pkg={{ item }} state=installed
   with_items:
+    - '@kde-desktop-environment'
     - GitPython
     - NetworkManager-openswan
     - NetworkManager-openvpn
