@@ -53,6 +53,7 @@
     - gstreamer1-plugins-base
     - gstreamer1-plugins-good
     - gstreamer1-plugins-ugly
+    - hamster-time-tracker
     - inkscape
     - ipset
     - k3b
