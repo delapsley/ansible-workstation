@@ -1,2 +1,5 @@
-[all]
+[workstation]
 localhost    ansible_connection=local
+
+[workstation:vars]
+user=stpierre

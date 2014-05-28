@@ -1,8 +1,8 @@
 ---
 # set up users
-- name: set up user account for stpierre
+- name: set up user account for {{ user }}
   user: >
-    name=stpierre state=present home=/home/stpierre uid=1000
+    name={{ user }} state=present home=/home/{{ user }} uid=1000
     groups=mock,wheel,fuse,wireshark,vboxusers append=yes shell=/bin/zsh
     comment="Chris St. Pierre"
 - name: set up sudoers
