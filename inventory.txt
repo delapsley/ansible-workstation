@@ -2,4 +2,5 @@
 localhost    ansible_connection=local
 
 [workstation:vars]
-user=stpierre
+user=cstpierr
+uid=1001

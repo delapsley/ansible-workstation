@@ -9,4 +9,4 @@ Usage
 
 Clone this repo and install `ansible <http://www.ansible.com>`_.  Run::
 
-    ansible-playbook -i inventory.txt site.yml
+    ansible-playbook -i inventory.txt -sv site.yml

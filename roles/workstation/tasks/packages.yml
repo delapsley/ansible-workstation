@@ -1,46 +1,30 @@
----
 # install packages
 - name: install packages
   yum: pkg={{ item }} state=installed
   with_items:
     - '@kde-desktop-environment'
     - GitPython
-    - NetworkManager-openswan
     - NetworkManager-openvpn
-    - NetworkManager-pptp
-    - NetworkManager-vpnc
-    - VirtualBox
+    - VirtualBox-4.3
     - ansible
+    - bitlbee
     - bpython
     - colordiff
     - ctags
     - ctags-etags
-    - dnspython
-    - docker-io
     - dos2unix
-    - dvdstyler
     - emacs
     - emacs-el
-    - emacs-git
-    - emacs-git-el
-    - emacs-gnuplut
-    - emacs-golang
-    - emacs-goodies
-    - emacs-mmm
-    - emacs-mmm-el
-    - emacs-pymacs
-    - emacs-pymacs-el
     - euca2ools
     - fedora-packager
-    - fedora-review
-    - fedora-review-tests
     - fedpkg
+    - fuse
     - git
+    - git-review
     - gnupg
     - gnupg2
     - gnuplot
     - gnuplot-doc
-    - gnuplot-py
     - golang
     - graphviz
     - gstreamer
@@ -56,51 +40,39 @@
     - hamster-time-tracker
     - inkscape
     - ipset
-    - k3b
-    - koji
+    - kernel-devel
     - konversation
     - kpartx
     - libreoffice-calc
     - libreoffice-impress
     - libreoffice-math
     - libreoffice-writer
+    - libxml2-devel
     - liveusb-creator
     - lm_sensors
     - lsof
     - man-pages
+    - mariadb-devel
     - mercurial
     - mock
     - mod_ssl
     - mod_wsgi
-    - mongodb
-    - mongodb-server
     - mrtg
     - nmap
     - nmap-ncat
     - ntp
     - ntpdate
     - okular
-    - pychecker
     - pyflakes
     - pylint
-    - pyparsing
-    - python-coverage
     - python-docker-py
-    - python-lxml
-    - python-mock
-    - python-nose
     - python-pep8
     - python-pip
-    - python-rope
-    - python-ropemacs
-    - python-ropemode
     - python-setuptools
-    - python-tox
-    - python-virtualenv
     - python-virtualenv
     - python-virtualenvwrapper
-    - python3-bpython
     - recordmydesktop
+    - rhythmbox
     - rpm-build
     - rpm-python
     - rpmdevtools
@@ -109,18 +81,41 @@
     - strace
     - subversion
     - sysstat
+    - telnet
+    - terminator
     - texlive
+    - thunderbird
     - tito
     - vlc
     - wget
     - wireshark
-    - xmlstarlet
     - zsh
+- name: install Fedora packages
+  yum: pkg={{ item }} state=installed
+  with_items:
+    - docker-io
+    - fedora-review
+    - fedora-review-tests
+    - hamster-time-tracker
+    - xmlstarlet
+  when: ansible_os_family == "Fedora"
+- name: install CentOS packages
+  yum: pkg={{ item }} state=installed
+  with_items:
+    - docker
+  when: ansible_os_family == "RedHat"
+
 - name: check for Vagrant RPM
   shell: rpm -q vagrant
   register: vagrant_installed_check
   ignore_errors: true
   changed_when: "vagrant_installed_check.rc != 0"
 - name: install Vagrant
-  shell: yum localinstall --nogpgcheck https://dl.bintray.com/mitchellh/vagrant/#vagrant_1.6.2_x86_64.rpm
+  shell: 'rpm -hvU https://dl.bintray.com/mitchellh/vagrant/vagrant_1.6.5_x86_64.rpm'
   when: vagrant_installed_check.rc != 0
+- name: check for iptables services
+  stat: path=/usr/lib/systemd/system/iptables.service follow=true
+  register: iptables_services_exist
+- name: install iptables services
+  yum: pkg=iptables-services state=installed
+  when: iptables_services_exist.stat.exists == False
